@@ -42,56 +42,56 @@ local function beginCrafting(player, craft)
 end
 
 ---@param event CustomInputEvent
-function promoteCraft(event)
+---@param getOrderGen fun(length: number): thread
+local function rescheduleCrafting(event, getOrderGen)
+    -- validate
     local player = game.players[event.player_index]
     if not validatePlayer(player) then
-        return nil
+        return
     end
 
+    -- cancel crafting
     local crafts = cancelCraftingQueue(player)
-    local length = #crafts
 
-    beginCrafting(player, crafts[1])
-    for i = length, 2, -1 do
-        beginCrafting(player, crafts[i])
+    -- reschedule crafting
+    local orderGen = getOrderGen(#crafts)
+    while true do
+        local status, value = coroutine.resume(orderGen)
+        if not status then
+            break
+        end
+        beginCrafting(player, crafts[value])
     end
 end
-script.on_event("promote-craft", --[[---@type]] promoteCraft)
 
+script.on_event("promote-craft", function(event)
+    rescheduleCrafting(--[[---@type]] event, function(length)
+        return coroutine.create(function()
+            coroutine.yield(1)
+            for i = length, 2, -1 do
+                coroutine.yield(i)
+            end
+        end)
+    end)
+end)
 
----@param event CustomInputEvent
-local function demoteCraft(event)
-    local player = game.players[event.player_index]
-    if not validatePlayer(player) then
-        return nil
-    end
+script.on_event("demote-craft", function(event)
+    rescheduleCrafting(--[[---@type]] event, function(length)
+        return coroutine.create(function()
+            for i = length-1, 1, -1 do
+                coroutine.yield(i)
+            end
+            coroutine.yield(length)
+        end)
+    end)
+end)
 
-    local crafts = cancelCraftingQueue(player)
-    local length = #crafts
-
-    for i = length-1, 1, -1 do
-        beginCrafting(player, crafts[i])
-    end
-    beginCrafting(player, crafts[length])
-
-end
-script.on_event("demote-craft", --[[---@type]] demoteCraft)
-
-
----@param event CustomInputEvent
-local function resetCraft(event)
-    local player = game.players[event.player_index]
-    if not validatePlayer(player) then
-        return nil
-    end
-
-    local crafts = cancelCraftingQueue(player)
-    local length = #crafts
-
-    for i = length, 1, -1 do
-        beginCrafting(player, crafts[i])
-    end
-
-end
-script.on_event("reset-craft", --[[---@type]] resetCraft)
-
+script.on_event("reset-craft", function(event)
+    rescheduleCrafting(--[[---@type]] event, function(length)
+        return coroutine.create(function()
+            for i = length, 1, -1 do
+                coroutine.yield(i)
+            end
+        end)
+    end)
+end)
