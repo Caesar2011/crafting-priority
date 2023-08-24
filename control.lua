@@ -50,6 +50,10 @@ local function rescheduleCrafting(event, getOrderGen)
         return
     end
 
+    -- extend inventory size to prevent overflowing
+    local inventory_bonus = player.character.character_inventory_slots_bonus
+    player.character.character_inventory_slots_bonus = inventory_bonus + 1000
+
     -- cancel crafting
     local crafts = cancelCraftingQueue(player)
 
@@ -62,6 +66,9 @@ local function rescheduleCrafting(event, getOrderGen)
         end
         beginCrafting(player, crafts[value])
     end
+
+    -- restore inventory size
+    player.character.character_inventory_slots_bonus = inventory_bonus
 end
 
 script.on_event("promote-craft", function(event)
