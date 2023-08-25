@@ -42,8 +42,8 @@ local function beginCrafting(player, craft)
 end
 
 ---@param event CustomInputEvent
----@param getOrderGen fun(length: number): thread
-local function rescheduleCrafting(event, getOrderGen)
+---@param iterator fun(length: number, next: fun(idx: number))
+local function rescheduleCrafting(event, iterator)
     -- validate
     local player = game.players[event.player_index]
     if not validatePlayer(player) then
@@ -58,47 +58,36 @@ local function rescheduleCrafting(event, getOrderGen)
     local crafts = cancelCraftingQueue(player)
 
     -- reschedule crafting
-    local orderGen = getOrderGen(#crafts)
-    while true do
-        local status, value = coroutine.resume(orderGen)
-        if not status then
-            break
-        end
-        beginCrafting(player, crafts[value])
-    end
+    iterator(#crafts, function(idx)
+        beginCrafting(player, crafts[idx])
+    end)
 
     -- restore inventory size
     player.character.character_inventory_slots_bonus = inventory_bonus
 end
 
 script.on_event("promote-craft", function(event)
-    rescheduleCrafting(--[[---@type]] event, function(length)
-        return coroutine.create(function()
-            coroutine.yield(1)
-            for i = length, 2, -1 do
-                coroutine.yield(i)
-            end
-        end)
+    rescheduleCrafting(--[[---@type]] event, function(length, next)
+        next(1)
+        for i = length, 2, -1 do
+            next(i)
+        end
     end)
 end)
 
 script.on_event("demote-craft", function(event)
-    rescheduleCrafting(--[[---@type]] event, function(length)
-        return coroutine.create(function()
-            for i = length-1, 1, -1 do
-                coroutine.yield(i)
-            end
-            coroutine.yield(length)
-        end)
+    rescheduleCrafting(--[[---@type]] event, function(length, next)
+        for i = length-1, 1, -1 do
+            next(i)
+        end
+        next(length)
     end)
 end)
 
 script.on_event("reset-craft", function(event)
-    rescheduleCrafting(--[[---@type]] event, function(length)
-        return coroutine.create(function()
-            for i = length, 1, -1 do
-                coroutine.yield(i)
-            end
-        end)
+    rescheduleCrafting(--[[---@type]] event, function(length, next)
+        for i = length, 1, -1 do
+            next(i)
+        end
     end)
 end)
