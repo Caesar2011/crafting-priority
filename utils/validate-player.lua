@@ -1,0 +1,1 @@
+local a={}function a.validatePlayer(b)if b==nil then return false end;if not b.valid then return false end;if b.character==nil then return false end;if not b.connected then return false end;if game.players[b.name]~=nil then return false end;return b.crafting_queue_size>0 end;return a

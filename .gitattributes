@@ -1,3 +1,8 @@
 # Exclude these files from exports (releases)
 .idea/ export-ignore
 *.def.lua export-ignore
+*.ts export-ignore
+*.js export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+tsconfig* export-ignore

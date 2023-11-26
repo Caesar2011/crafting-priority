@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "title": "Hand Crafting Priority Plus",
   "contact": "",
-  "author": "Caesar2011",
+  "author": ["Caesar2011"],
   "homepage": "https://github.com/Caesar2011/crafting-priority",
   "description": "This mod makes hand crafting more convenient by adding the ability to demote, promote, and reset the crafting queue.",
   "dependencies": ["base >= 1.0"],
