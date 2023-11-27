@@ -4,7 +4,8 @@
 VERSION=$(grep -o '"version": "[^"]*"' ./info.json | awk -F'"' '{print $4}')
 
 # Create a zip archive
-git archive --format=zip --output="HandCraftingPriorityPlus_$VERSION.zip" --prefix="HandCraftingPriorityPlus_$VERSION/" --worktree-attributes HEAD
+uploadStash=$(git stash create);
+git archive --format=zip --output="HandCraftingPriorityPlus_$VERSION.zip" --prefix="HandCraftingPriorityPlus_$VERSION/" --worktree-attributes "${uploadStash:-HEAD}"
 
 # Check if cmd.exe exists
 if command -v cmd.exe &> /dev/null; then
