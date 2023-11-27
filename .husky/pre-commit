@@ -1,0 +1,10 @@
+#!/bin/bash
+. "$(dirname -- "$0")/_/husky.sh"
+
+export PATH=./node_modules/.bin:$PATH
+
+npm test
+npm run lint-staged
+npm run build
+
+git ls-files -c --exclude-standard "*.lua" | xargs git add

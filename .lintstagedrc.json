@@ -1,0 +1,6 @@
+{
+  "*.ts": [
+    "eslint --fix",
+    "tsc-files --noEmit -p tsconfig.json"
+  ]
+}
