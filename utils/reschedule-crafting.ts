@@ -1,5 +1,5 @@
-import {LuaPlayer} from "factorio:runtime"
-import {validatePlayer} from "./validate-player"
+import {type LuaPlayer} from "factorio:runtime"
+import {type ActivePlayer} from "./validate-player"
 
 interface CraftingQueueItem {
   index: number;
@@ -23,10 +23,7 @@ function beginCrafting(player: LuaPlayer, craft: CraftingQueueItem): void {
   player.begin_crafting({count: craft.count, recipe: craft.recipe, silent: false})
 }
 
-export function rescheduleCrafting(player: LuaPlayer | undefined, iterator: (length: number, next: (idx: number) => void) => void): void {
-  // validate
-  if (!validatePlayer(player)) return
-
+export function rescheduleCrafting(player: ActivePlayer, iterator: (length: number, next: (idx: number) => void) => void): void {
   // extend inventory size to prevent overflowing
   const inventory_bonus = player.character.character_inventory_slots_bonus
   player.character.character_inventory_slots_bonus = inventory_bonus + 10000

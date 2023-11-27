@@ -1,6 +1,6 @@
-import {LuaPlayer} from "factorio:runtime"
+import {type LuaPlayer} from "factorio:runtime"
 
-type ActivePlayer = {
+export type ActivePlayer = {
   [K in keyof LuaPlayer]-?: K extends "age" | "connected" | "crafting_queue_size" ? LuaPlayer[K] : NonNullable<LuaPlayer[K]>;
 }
 

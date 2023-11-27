@@ -10,7 +10,8 @@ module.exports = {
   },
   plugins: [
     "@typescript-eslint",
-    "@stylistic/ts"
+    "@stylistic/ts",
+    "unused-imports"
   ],
   rules: {
     "indent": "off",
@@ -23,17 +24,23 @@ module.exports = {
       "allowNullableObject": false
     }],
     "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/consistent-type-imports": ["error", {
+      prefer: "type-imports",
+      disallowTypeAnnotations: true,
+      fixStyle: "inline-type-imports",
+    }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ],
     "no-restricted-syntax": [
       "error",
       {
         selector: "FunctionDeclaration > Identifier[optional=true]",
-        message: "Optionals are not allowed. Replace with type union undefined",
-        /*fix(fixer) {
-          return fixer.replaceText(
-            this.node.parent.params[this.node.parent.params.indexOf(this.node)],
-            `${this.source}?: number|undefined`
-          );
-        }*/
+        message: "Optionals are not allowed. Replace with type union undefined"
       }
     ]
   }

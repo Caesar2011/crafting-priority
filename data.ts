@@ -1,9 +1,9 @@
-import {PrototypeData} from "factorio:common"
-import {CustomInputPrototype} from "factorio:prototype"
+import { type PrototypeData} from "factorio:common"
+import {type CustomInputPrototype, type ShortcutPrototype} from "factorio:prototype"
 
 declare const data: PrototypeData
 
-data.extend([
+data.extend<CustomInputPrototype|ShortcutPrototype>([
   {
     type: "custom-input",
     name: "promote-craft",
@@ -21,5 +21,16 @@ data.extend([
     name: "reset-craft",
     key_sequence: "SHIFT + R",
     consuming: "game-only"
-  } satisfies CustomInputPrototype
+  } satisfies CustomInputPrototype,
+  {
+    type: "shortcut",
+    name: "auto-reset-craft",
+    toggleable: true,
+    icon: {
+      filename: "__base__/graphics/auto-craft-sprite.png",
+      width: 32,
+      height: 32,
+    },
+    action: "lua"
+  } satisfies ShortcutPrototype
 ])
