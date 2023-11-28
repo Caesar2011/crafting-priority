@@ -26,7 +26,9 @@ jobs:
         run: |
           chmod +x ./scripts/release.sh
           ./scripts/release.sh
-          echo "Version in VERSION_FILE: $(cat VERSION_FILE)"
+          echo "VERSION=$(cat VERSION_FILE)" >> $GITHUB_ENV
+          echo "TAG_NAME=v$(cat VERSION_FILE)" >> $GITHUB_ENV
+          echo "Version in VERSION_FILE: ${{ env.VERSION }}"
           echo
           echo "Description:"
           cat DESCRIPTION_FILE
@@ -35,8 +37,9 @@ jobs:
         id: check_version
         run: |
           echo "Version in package.json: $(jq -r .version package.json)"
-          echo "Version in VERSION_FILE: $(cat VERSION_FILE)"
-          if [[ "$(jq -r .version package.json)" != "$(cat VERSION_FILE)" ]]; then
+          echo "Version in VERSION_FILE: ${{ env.VERSION }}"
+          PKG_JSON_VERSION = $(grep -o '"version": "[^"]*"' ./package.json | awk -F'"' '{print $4}')
+          if [[ "$PKG_JSON_VERSION" != "${{ env.VERSION }}" ]]; then
             echo "Version in package.json does not match VERSION_FILE. Aborting workflow."
             exit 1
           fi
@@ -44,7 +47,7 @@ jobs:
       - name: Check if changelog contains version line
         id: check_changelog
         run: |
-          if ! grep -q "Version: $(cat VERSION_FILE)" changelog.txt; then
+          if ! grep -q "Version: ${{ env.VERSION }}" changelog.txt; then
           echo "Changelog does not contain version line. Aborting workflow."
           exit 1
           fi
@@ -52,7 +55,7 @@ jobs:
       - name: Check if tag already exists
         id: check_tag
         run: |
-          if git rev-parse -q --verify "refs/tags/$(cat VERSION_FILE)"; then
+          if git rev-parse -q --verify "refs/tags/${{ env.TAG_NAME }}"; then
           echo "Tag already exists. Aborting workflow."
           exit 1
           fi
@@ -63,12 +66,12 @@ jobs:
         with:
           body_path: ./DESCRIPTION_FILE
           files: ./HandCraftingPriorityPlus_*.zip
-          tag_name: ${{ env.VERSION }}
-          name: ${{ env.VERSION }}
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
 
       - name: Create and Upload Artifact
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
-          name: preview-zip
+          name: HandCraftingPriorityPlus_${{ env.VERSION }}-preview.zip
           path: ./HandCraftingPriorityPlus_*.zip
