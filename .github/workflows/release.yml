@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "Version in package.json: $(jq -r .version package.json)"
           echo "Version in VERSION_FILE: ${{ env.VERSION }}"
-          PKG_JSON_VERSION = $(grep -o '"version": "[^"]*"' ./package.json | awk -F'"' '{print $4}')
+          PKG_JSON_VERSION=$(grep -o '"version": "[^"]*"' ./package.json | awk -F'"' '{print $4}')
           if [[ "$PKG_JSON_VERSION" != "${{ env.VERSION }}" ]]; then
             echo "Version in package.json does not match VERSION_FILE. Aborting workflow."
             exit 1
