@@ -4,7 +4,7 @@ describe("promote iterator", () => {
   test("queue n > 1", () => {
     let arr: number[] = []
     promoteIterator(5, (idx) => arr = [...arr, idx])
-    expect(arr).toStrictEqual([1, 5, 4, 3, 2])
+    expect(arr).toStrictEqual([0, 4, 3, 2, 1])
   })
   test("queue n = 0", () => {
     let arr: number[] = []
@@ -14,7 +14,7 @@ describe("promote iterator", () => {
   test("queue n = 1", () => {
     let arr: number[] = []
     promoteIterator(1, (idx) => arr = [...arr, idx])
-    expect(arr).toStrictEqual([1])
+    expect(arr).toStrictEqual([0])
   })
 })
 
@@ -22,7 +22,7 @@ describe("demote iterator", () => {
   test("queue n > 1", () => {
     let arr: number[] = []
     demoteIterator(5, (idx) => arr = [...arr, idx])
-    expect(arr).toStrictEqual([4, 3, 2, 1, 5])
+    expect(arr).toStrictEqual([3, 2, 1, 0, 4])
   })
   test("queue n = 0", () => {
     let arr: number[] = []
@@ -32,7 +32,7 @@ describe("demote iterator", () => {
   test("queue n = 1", () => {
     let arr: number[] = []
     demoteIterator(1, (idx) => arr = [...arr, idx])
-    expect(arr).toStrictEqual([1])
+    expect(arr).toStrictEqual([0])
   })
 })
 
@@ -40,7 +40,7 @@ describe("same order iterator", () => {
   test("queue n > 1", () => {
     let arr: number[] = []
     sameOrderIterator(5, (idx) => arr = [...arr, idx])
-    expect(arr).toStrictEqual([5, 4, 3, 2, 1])
+    expect(arr).toStrictEqual([4, 3, 2, 1, 0])
   })
   test("queue n = 0", () => {
     let arr: number[] = []
@@ -50,6 +50,6 @@ describe("same order iterator", () => {
   test("queue n = 1", () => {
     let arr: number[] = []
     sameOrderIterator(1, (idx) => arr = [...arr, idx])
-    expect(arr).toStrictEqual([1])
+    expect(arr).toStrictEqual([0])
   })
 })

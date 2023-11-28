@@ -25,12 +25,12 @@ data.extend<CustomInputPrototype|ShortcutPrototype>([
   {
     type: "shortcut",
     name: "auto-reset-craft",
+    action: "lua",
     toggleable: true,
     icon: {
-      filename: "__base__/graphics/auto-craft-sprite.png",
-      width: 32,
-      height: 32,
+      filename: "__HandCraftingPriorityPlus__/graphics/auto-craft-sprite.png",
+      width: 16,
+      height: 16,
     },
-    action: "lua"
   } satisfies ShortcutPrototype
 ])

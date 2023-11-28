@@ -5,7 +5,7 @@ export type ActivePlayer = {
 }
 
 export function validatePlayer(player: LuaPlayer | undefined): player is ActivePlayer {
-  if (player == undefined) {
+  if (player === undefined) {
     return false
   }
   if (!player.valid) {
@@ -17,7 +17,7 @@ export function validatePlayer(player: LuaPlayer | undefined): player is ActiveP
   if (!player.connected) {
     return false
   }
-  if (player.name in game.players) {
+  if (game.players[player.name] === undefined) {
     return false
   }
   return player.crafting_queue_size > 0

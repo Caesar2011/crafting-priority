@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -eo pipefail
+
+npm run compile
+
 # Get the version from info.json
 VERSION=$(grep -o '"version": "[^"]*"' ./info.json | awk -F'"' '{print $4}')
 
@@ -23,6 +27,8 @@ if command -v cmd.exe &> /dev/null; then
 
     # Copy the zip file to the Factorio mods folder
     cp HandCraftingPriorityPlus_*.zip "$WIN_APPDATA/Factorio/mods/"
+
+    cmd.exe /c start steam://rungameid/427520 &> /dev/null
 else
     echo "cmd.exe not found. Cannot determine Windows AppData path."
 fi
