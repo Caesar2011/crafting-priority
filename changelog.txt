@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+Date: 28.11.2023
+  Features:
+    - Added auto-optimize toggle as shortcut
+    - Added keybinding for auto-optimize toggle
+  Changes:
+    - Migration to Typescript2Lua for better code quality
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 25.08.2023
   Bugfixes:
