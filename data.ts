@@ -23,9 +23,16 @@ data.extend<CustomInputPrototype|ShortcutPrototype>([
     consuming: "game-only"
   } satisfies CustomInputPrototype,
   {
+    type: "custom-input",
+    name: "auto-reset-craft",
+    key_sequence: "",
+    consuming: "game-only"
+  } satisfies CustomInputPrototype,
+  {
     type: "shortcut",
     name: "auto-reset-craft",
     action: "lua",
+    associated_control_input: "auto-reset-craft",
     toggleable: true,
     icon: {
       filename: "__HandCraftingPriorityPlus__/graphics/auto-craft-sprite.png",
