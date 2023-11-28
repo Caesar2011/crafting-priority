@@ -5,4 +5,9 @@
 *.js export-ignore
 package.json export-ignore
 package-lock.json export-ignore
+.lintstagedrc.json export-ignore
 tsconfig* export-ignore
+.husky/ export-ignore
+scripts/ export-ignore
+VERSION_FILE export-ignore
+DESCRIPTION_FILE export-ignore

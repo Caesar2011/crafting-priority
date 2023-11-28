@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Run release script
+        run: |
+          chmod +x ./scripts/release.sh
+          ./scripts/release.sh
+
+      - name: Check if version in package.json matches VERSION_FILE
+        id: check_version
+        run: |
+          if [[ "$(jq -r .version package.json)" != "$(cat VERSION_FILE)" ]]; then
+            echo "Version in package.json does not match VERSION_FILE. Aborting workflow."
+            exit 1
+          fi
+
+      - name: Check if changelog contains version line
+        id: check_changelog
+        run: |
+          if ! grep -q "Version: $(cat VERSION_FILE)" changelog.txt; then
+          echo "Changelog does not contain version line. Aborting workflow."
+          exit 1
+          fi
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ env.VERSION }}"; then
+          echo "Tag already exists. Aborting workflow."
+          exit 1
+          fi
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          body_path: ./DESCRIPTION_FILE
+          files: ./HandCraftingPriorityPlus_*.zip
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
+
+      - name: Create and Upload Artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v2
+        with:
+          name: preview-zip
+          path: ./HandCraftingPriorityPlus_*.zip
