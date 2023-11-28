@@ -1,6 +1,6 @@
 {
   "name": "crafting-priority",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Welcome to the Hand Crafting Priority Plus mod! This mod is designed to enhance your handcrafting experience in Factorio by introducing features that allow you to manage your crafting queue more efficiently. With the ability to demote, promote, and reset items in the crafting queue, you'll find it easier than ever to control your crafting priorities without worrying about inventory overflows. Even in creative mode, this mod offers seamless functionality without causing crashes.",
   "main": "\"\"",
   "directories": {

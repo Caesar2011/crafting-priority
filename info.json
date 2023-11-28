@@ -1,11 +1,13 @@
 {
   "name": "HandCraftingPriorityPlus",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Hand Crafting Priority Plus",
   "contact": "",
   "author": "Caesar2011",
   "homepage": "https://github.com/Caesar2011/crafting-priority",
   "description": "This mod makes hand crafting more convenient by adding the ability to demote, promote, and reset the crafting queue.",
-  "dependencies": ["base >= 1.0"],
+  "dependencies": [
+    "base >= 1.0"
+  ],
   "factorio_version": "1.1"
 }

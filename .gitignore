@@ -1,3 +1,5 @@
 /coverage/
 /node_modules/
 *.zip
+DESCRIPTION_FILE
+VERSION_FILE

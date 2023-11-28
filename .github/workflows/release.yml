@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run release script
+        run: |
+          chmod +x ./scripts/release.sh
+          ./scripts/release.sh
+          echo "VERSION=$(cat VERSION_FILE)" >> $GITHUB_ENV
+          echo "TAG_NAME=v$(cat VERSION_FILE)" >> $GITHUB_ENV
+          echo "Version in VERSION_FILE: ${{ env.VERSION }}"
+          echo
+          echo "Description:"
+          cat DESCRIPTION_FILE
+
+      - name: Check if version in package.json matches VERSION_FILE
+        id: check_version
+        run: |
+          echo "Version in package.json: $(jq -r .version package.json)"
+          echo "Version in VERSION_FILE: ${{ env.VERSION }}"
+          PKG_JSON_VERSION=$(grep -o '"version": "[^"]*"' ./package.json | awk -F'"' '{print $4}')
+          if [[ "$PKG_JSON_VERSION" != "${{ env.VERSION }}" ]]; then
+            echo "Version in package.json does not match VERSION_FILE. Aborting workflow."
+            exit 1
+          fi
+
+      - name: Check if changelog contains version line
+        id: check_changelog
+        run: |
+          if ! grep -q "Version: ${{ env.VERSION }}" changelog.txt; then
+          echo "Changelog does not contain version line. Aborting workflow."
+          exit 1
+          fi
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ env.TAG_NAME }}"; then
+          echo "Tag already exists. Aborting workflow."
+          exit 1
+          fi
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          body_path: ./DESCRIPTION_FILE
+          files: ./HandCraftingPriorityPlus_*.zip
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
+
+      - name: Create and Upload Artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: HandCraftingPriorityPlus_${{ env.VERSION }}-preview.zip
+          path: ./HandCraftingPriorityPlus_*.zip
