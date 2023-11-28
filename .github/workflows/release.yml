@@ -3,6 +3,8 @@ name: Release
 on:
   pull_request:
   push:
+    branches:
+      - main
 
 jobs:
   release:
@@ -16,6 +18,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
 
       - name: Run release script
         run: |
