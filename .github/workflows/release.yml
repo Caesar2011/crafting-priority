@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -26,10 +26,16 @@ jobs:
         run: |
           chmod +x ./scripts/release.sh
           ./scripts/release.sh
+          echo "Version in VERSION_FILE: $(cat VERSION_FILE)"
+          echo
+          echo "Description:"
+          cat DESCRIPTION_FILE
 
       - name: Check if version in package.json matches VERSION_FILE
         id: check_version
         run: |
+          echo "Version in package.json: $(jq -r .version package.json)"
+          echo "Version in VERSION_FILE: $(cat VERSION_FILE)"
           if [[ "$(jq -r .version package.json)" != "$(cat VERSION_FILE)" ]]; then
             echo "Version in package.json does not match VERSION_FILE. Aborting workflow."
             exit 1
@@ -46,7 +52,7 @@ jobs:
       - name: Check if tag already exists
         id: check_tag
         run: |
-          if git rev-parse -q --verify "refs/tags/${{ env.VERSION }}"; then
+          if git rev-parse -q --verify "refs/tags/$(cat VERSION_FILE)"; then
           echo "Tag already exists. Aborting workflow."
           exit 1
           fi
@@ -62,7 +68,7 @@ jobs:
 
       - name: Create and Upload Artifact
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: preview-zip
           path: ./HandCraftingPriorityPlus_*.zip
